@@ -53,6 +53,15 @@ class DetailViewController: UIViewController, UITextFieldDelegate {
         var todoModel = TodoModel(id: id, image: image, title: title, date: date)
         
         todos.append(todoModel)
+        
+        //添加本地通知
+        let localNofication = UILocalNotification()
+        localNofication.fireDate = todoDate.date
+        localNofication.alertBody = title
+        localNofication.alertAction = "Show me the item"
+        localNofication.timeZone = NSTimeZone.defaultTimeZone()
+        localNofication.applicationIconBadgeNumber = UIApplication.sharedApplication().applicationIconBadgeNumber + 1
+        UIApplication.sharedApplication().scheduleLocalNotification(localNofication)
     }
     
     override func touchesEnded(touches: Set<NSObject>, withEvent event: UIEvent) {

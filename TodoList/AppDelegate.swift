@@ -16,7 +16,28 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
         // Override point for customization after application launch.
+       
+        let locationNotification = launchOptions?[UIApplicationLaunchOptionsLocalNotificationKey] as? UILocalNotification
+        if locationNotification != nil {
+            application.applicationIconBadgeNumber = 0
+        }
+        
+        if UIApplication.instancesRespondToSelector("registerUserNotificationSettings:") {
+            application.registerUserNotificationSettings(UIUserNotificationSettings(forTypes: UIUserNotificationType.Alert|UIUserNotificationType.Badge|UIUserNotificationType.Sound, categories: nil))
+        }
+        
         return true
+    }
+    
+    func application(application: UIApplication, didReceiveLocalNotification notification: UILocalNotification) {
+        let state = application.applicationState
+        if state == UIApplicationState.Active {
+            let alert = UIAlertView(title: "通知", message: notification.alertBody, delegate: self, cancelButtonTitle: "确定")
+            alert.show()
+        }
+        NSNotificationCenter.defaultCenter().postNotificationName("reloadData", object: self)
+        
+        application.applicationIconBadgeNumber = 0
     }
 
     func applicationWillResignActive(application: UIApplication) {
